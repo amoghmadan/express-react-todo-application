@@ -1,3 +1,4 @@
+import { MongoServerError } from "mongodb";
 import { Model } from "mongoose";
 
 import { NotFoundError } from "../../exceptions/http";
@@ -9,18 +10,22 @@ export class ItemService {
   private model: Model<IUser> = User;
 
   getItem = async (user: IUser, id: string): Promise<IItem> => {
-    const obj: IUser | null = await this.model.findById(user._id, {
-      items: { $elemMatch: { _id: id } },
-    });
-    if (!obj) throw NotFoundError;
-    if (obj.items.length === 0) throw NotFoundError;
-    return obj.items[0];
+    try {
+      const obj: IUser | null = await this.model.findById(user._id, {
+        items: { $elemMatch: { _id: id } },
+      });
+      if (!obj || obj.items.length === 0) throw new NotFoundError("Not Found");
+      return obj.items[0];
+    } catch (err: unknown) {
+      if (err instanceof MongoServerError) throw new NotFoundError("Not Found");
+      throw err;
+    }
   };
 
   createItem = async (user: IUser, payload: IItem): Promise<IItem> => {
     user.items.push(payload);
     await user.save();
-    return payload;
+    return user.items[user.items.length - 1];
   };
 
   listItem = async (user: IUser): Promise<IItem[]> => {
@@ -42,11 +47,23 @@ export class ItemService {
     id: string,
     payload: IItem
   ): Promise<IItem> => {
-    const item: IItem = await this.getItem(user, id);
-    // await this.model.findByIdAndUpdate(user._id, {
-    //   $push: { "items.$": payload },
-    // });
-    return payload;
+    let item: IItem = await this.getItem(user, id);
+    await this.model.updateOne(
+      { items: { $elemMatch: { _id: id } } },
+      {
+        $set: Object.fromEntries(
+          Object.entries(payload).map(
+            (entry: [string, number | string]): [string, number | string] => [
+              `items.$.${entry[0]}`,
+              entry[1],
+            ]
+          )
+        ),
+      }
+    );
+    await user.save();
+    item = await this.getItem(user, id);
+    return item;
   };
 
   partialUpdateItem = async (
@@ -54,15 +71,22 @@ export class ItemService {
     id: string,
     payload: IPartialUpdateItem
   ): Promise<IItem> => {
-    const item: IItem = await this.getItem(user, id);
-    // const data: any = {};
-    // if (payload.hasOwnProperty("text")) data["items.$.text"] = payload.text;
-    // if (payload.hasOwnProperty("done")) data["items.$.done"] = payload.done;
-    // await this.model.findByIdAndUpdate(
-    //   user._id,
-    //   { $set: data },
-    //   { arrayFilters: [{ "items._id": item._id }] }
-    // );
+    let item: IItem = await this.getItem(user, id);
+    await this.model.updateOne(
+      { items: { $elemMatch: { _id: id } } },
+      {
+        $set: Object.fromEntries(
+          Object.entries(payload).map(
+            (entry: [string, number | string]): [string, number | string] => [
+              `items.$.${entry[0]}`,
+              entry[1],
+            ]
+          )
+        ),
+      }
+    );
+    await user.save();
+    item = await this.getItem(user, id);
     return item;
   };
 
