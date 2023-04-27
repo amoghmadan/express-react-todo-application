@@ -1,0 +1,51 @@
+version: "3"
+
+services:
+  db:
+    container_name: Tracker-Database
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    restart: always
+
+  api:
+    build: ./tracker_api
+    command: bash -c "npm run build && npm start"
+    container_name: "Tracker-Backend"
+    environment:
+      TRACKER_ENV: ${TRACKER_ENV:-development}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    image: tracker:api
+    ports:
+      - "8000:8000"
+    restart: always
+    volumes:
+      - ./tracker_api:/tracker
+    depends_on:
+      - db
+
+  webui:
+    build: ./tracker_webui
+    command: bash -c "npm run build && http-server dist"
+    container_name: "Tracker-Frontend"
+    environment:
+      NODE_ENV: ${NODE_ENV:-local}
+    image: tracker:webui
+    ports:
+      - "3000:8080"
+    restart: always
+    volumes:
+      - ./tracker_webui:/tracker
+    depends_on:
+      - api
+
+  nginx:
+    image: nginx:latest
+    container_name: "Tracker-Nginx"
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - webui
