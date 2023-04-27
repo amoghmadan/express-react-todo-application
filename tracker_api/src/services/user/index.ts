@@ -31,7 +31,6 @@ export class UserService {
   };
 
   retrieveDetail = async (user: IUser): Promise<IUserDetail> => {
-    console.log(user);
     const detail: IUserDetail = {
       email: user.email,
       firstName: user.firstName,
