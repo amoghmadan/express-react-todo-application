@@ -1,7 +1,7 @@
-import { User } from "@/models";
-import { IUser } from "@/models/user/types";
+import { User } from "../models";
+import { IUser } from "../models/user/types";
 
-import { InvalidTokenError } from "@/exceptions";
+import { InvalidTokenError } from "../exceptions";
 
 export async function getUserByAuthHeader(
   authorization: string | undefined

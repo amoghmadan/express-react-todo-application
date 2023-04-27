@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { ValidationError } from "joi";
 
-import { IUser } from "@/models/user/types";
-import { UserService } from "@/services";
-import { ILoginResponse, IUserDetail } from "@/services/user/types";
-import { getUserByAuthHeader } from "@/utils/user";
-import { loginSchema } from "@/validations/user";
-import { ILoginPayload } from "@/validations/user/types";
+import { IUser } from "../../models/user/types";
+import { UserService } from "../../services";
+import { ILoginResponse, IUserDetail } from "../../services/user/types";
+import { getUserByAuthHeader } from "../../utils/user";
+import { loginSchema } from "../../validations/user";
+import { ILoginPayload } from "../../validations/user/types";
 
 export class UserController {
   private service: UserService = new UserService();
@@ -43,7 +43,7 @@ export class UserController {
     const user: IUser = await getUserByAuthHeader(
       request.headers?.authorization
     );
-    const data: {} = await this.service.performLogout(user);
+    const data: object = await this.service.performLogout(user);
     return response.status(204).json(data);
   };
 }

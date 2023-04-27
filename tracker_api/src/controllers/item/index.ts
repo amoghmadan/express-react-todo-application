@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
 
-import { IItem, IUser } from "@/models/user/types";
-import { ItemService } from "@/services";
-import { getUserByAuthHeader } from "@/utils/user";
+import { IItem, IUser } from "../../models/user/types";
+import { ItemService } from "../../services";
+import { getUserByAuthHeader } from "../../utils/user";
 import {
   createItemSchema,
   partialUpdateItemSchema,
   updateItemSchema,
-} from "@/validations/item";
-import { IPartialUpdateItem } from "@/validations/item/types";
+} from "../../validations/item";
+import { IPartialUpdateItem } from "../../validations/item/types";
 
 export class ItemController {
   private service: ItemService = new ItemService();
@@ -75,7 +75,10 @@ export class ItemController {
     const user: IUser = await getUserByAuthHeader(
       request.headers.authorization
     );
-    const data: {} = await this.service.destroyItem(user, request.params.id);
+    const data: object = await this.service.destroyItem(
+      user,
+      request.params.id
+    );
     return response.status(204).json(data);
   };
 }

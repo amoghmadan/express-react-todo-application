@@ -1,3 +1,3 @@
-import Authorization from "@/middlewares/authorization";
+import Authorization from "./authorization";
 
 export { Authorization };

@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import v1 from "@/routes/api/v1";
+import v1 from "./v1";
 
 const urlpatterns: Map<string, Router> = new Map<string, Router>([["/v1", v1]]);
 

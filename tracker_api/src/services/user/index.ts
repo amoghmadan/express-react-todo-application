@@ -1,11 +1,11 @@
 import { compareSync } from "bcryptjs";
 import { Model } from "mongoose";
 
-import { User } from "@/models";
-import { IUser } from "@/models/user/types";
-import { ILoginResponse, IUserDetail } from "@/services/user/types";
-import { generateKey } from "@/utils/token";
-import { ILoginPayload } from "@/validations/user/types";
+import { User } from "../../models";
+import { IUser } from "../../models/user/types";
+import { ILoginResponse, IUserDetail } from "../../services/user/types";
+import { generateKey } from "../../utils/token";
+import { ILoginPayload } from "../../validations/user/types";
 
 export class UserService {
   /**
@@ -41,7 +41,7 @@ export class UserService {
     return detail;
   };
 
-  performLogout = async (user: IUser): Promise<{}> => {
+  performLogout = async (user: IUser): Promise<object> => {
     user.set("token", undefined, { strict: false });
     await user.save();
     return {};

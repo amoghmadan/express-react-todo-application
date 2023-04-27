@@ -1,9 +1,9 @@
 import { Model } from "mongoose";
 
-import { NotFoundError } from "@/exceptions/http";
-import { User } from "@/models";
-import { IItem, IUser } from "@/models/user/types";
-import { IPartialUpdateItem } from "@/validations/item/types";
+import { NotFoundError } from "../../exceptions/http";
+import { User } from "../../models";
+import { IItem, IUser } from "../../models/user/types";
+import { IPartialUpdateItem } from "../../validations/item/types";
 
 export class ItemService {
   private model: Model<IUser> = User;
@@ -55,18 +55,18 @@ export class ItemService {
     payload: IPartialUpdateItem
   ): Promise<IItem> => {
     const item: IItem = await this.getItem(user, id);
-    const data: any = {};
-    if (payload.hasOwnProperty("text")) data["items.$.text"] = payload.text;
-    if (payload.hasOwnProperty("done")) data["items.$.done"] = payload.done;
-    await this.model.findByIdAndUpdate(
-      user._id,
-      { $set: data },
-      { arrayFilters: [{ "items._id": item._id }] }
-    );
+    // const data: any = {};
+    // if (payload.hasOwnProperty("text")) data["items.$.text"] = payload.text;
+    // if (payload.hasOwnProperty("done")) data["items.$.done"] = payload.done;
+    // await this.model.findByIdAndUpdate(
+    //   user._id,
+    //   { $set: data },
+    //   { arrayFilters: [{ "items._id": item._id }] }
+    // );
     return item;
   };
 
-  destroyItem = async (user: IUser, id: string): Promise<{}> => {
+  destroyItem = async (user: IUser, id: string): Promise<object> => {
     const item: IItem = await this.getItem(user, id);
     await this.model.findByIdAndUpdate(
       user._id,

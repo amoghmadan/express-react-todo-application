@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { Model } from "mongoose";
 
-import { User } from "@/models";
-import { IUser } from "@/models/user/types";
+import { User } from "../models";
+import { IUser } from "../models/user/types";
 
 export default class Authorization {
   private exclude: string[];
-  private keyword: string = "Bearer";
+  private keyword = "Bearer";
   private model: Model<IUser> = User;
 
   constructor(exclude: string[]) {
@@ -17,7 +17,7 @@ export default class Authorization {
     request: Request,
     response: Response,
     next: NextFunction
-  ): Promise<any> => {
+  ): Promise<void | Response> => {
     if (this.exclude.includes(request.path)) return next();
     const authorization: string | undefined =
       request.headers?.authorization || "Bearer Failure";

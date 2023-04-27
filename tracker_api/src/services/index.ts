@@ -1,4 +1,4 @@
-import { ItemService } from "@/services/item";
-import { UserService } from "@/services/user";
+import { ItemService } from "./item";
+import { UserService } from "./user";
 
 export { ItemService, UserService };

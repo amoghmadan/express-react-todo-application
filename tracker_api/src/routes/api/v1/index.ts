@@ -1,7 +1,7 @@
 import { Router } from "express";
 
-import account from "@/routes/api/v1/account";
-import task from "@/routes/api/v1/task";
+import account from "./account";
+import task from "./task";
 
 const urlpatterns: Map<string, Router> = new Map<string, Router>([
   ["/account", account],

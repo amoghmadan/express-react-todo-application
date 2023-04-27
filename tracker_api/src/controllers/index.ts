@@ -1,4 +1,4 @@
-import { ItemController } from "@/controllers/item";
-import { UserController } from "@/controllers/user";
+import { ItemController } from "./item";
+import { UserController } from "./user";
 
 export { ItemController, UserController };

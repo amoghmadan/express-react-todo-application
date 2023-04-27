@@ -1,3 +1,3 @@
-import { IConfig, IDatabase } from "@/interfaces/config";
+import { IConfig, IDatabase } from "./config";
 
 export { IConfig, IDatabase };

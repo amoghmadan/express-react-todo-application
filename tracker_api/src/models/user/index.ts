@@ -1,6 +1,6 @@
 import { Model, Schema, model } from "mongoose";
 
-import { IUser } from "@/models/user/types";
+import { IUser } from "./types";
 
 const itemSchema: Schema = new Schema(
   {
