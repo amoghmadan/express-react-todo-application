@@ -1,63 +1,75 @@
+import { STATUS_CODES } from "http";
+
 import { Request, Response } from "express";
 import { ValidationError } from "joi";
 
 import { IItem, IUser } from "../../models/user/types";
 import { ItemService } from "../../services";
-import { getUserByAuthHeader } from "../../utils/user";
 import {
   createItemSchema,
   partialUpdateItemSchema,
   updateItemSchema,
 } from "../../validations/item";
 import { IPartialUpdateItem } from "../../validations/item/types";
+import { getUserByAuthHeader } from "../../utils/user";
 
 export class ItemController {
   private service: ItemService = new ItemService();
 
   create = async (request: Request, response: Response): Promise<Response> => {
-    const user: IUser = await getUserByAuthHeader(
-      request.headers.authorization
-    );
     try {
+      const user: IUser = await getUserByAuthHeader(
+        request.headers.authorization
+      );
       const value: IItem = await createItemSchema.validateAsync(request.body);
       const data: IItem = await this.service.createItem(user, value);
       return response.status(201).json(data);
-    } catch (err: unknown) {
-      if (err instanceof ValidationError) {
-        return response.status(400).json(err);
-      }
-      return response.status(500).json({ detail: "Internal Server Error" });
+    } catch (err: any) {
+      const status = err.status || 500;
+      return response
+        .status(status)
+        .json({ detail: STATUS_CODES[status.toString()] });
     }
   };
 
   list = async (request: Request, response: Response): Promise<Response> => {
-    const user: IUser = await getUserByAuthHeader(
-      request.headers.authorization
-    );
-    const data = await this.service.listItem(user);
-    return response.status(200).json(data);
+    try {
+      const user: IUser = await getUserByAuthHeader(
+        request.headers.authorization
+      );
+      const data: IItem[] = await this.service.listItem(user);
+      return response.status(200).json(data);
+    } catch (err: any) {
+      const status = err.status || 500;
+      return response
+        .status(status)
+        .json({ detail: STATUS_CODES[status.toString()] });
+    }
   };
 
   retrieve = async (
     request: Request,
     response: Response
   ): Promise<Response> => {
-    const user: IUser = await getUserByAuthHeader(
-      request.headers.authorization
-    );
     try {
+      const user: IUser = await getUserByAuthHeader(
+        request.headers.authorization
+      );
       const data = await this.service.retrieveItem(user, request.params.id);
       return response.status(200).json(data);
-    } catch (err: unknown) {
-      return response.status(404).json({ detail: "Not Found" });
+    } catch (err: any) {
+      const status = err.status || 500;
+      return response
+        .status(status)
+        .json({ detail: STATUS_CODES[status.toString()] });
     }
   };
 
   update = async (request: Request, response: Response): Promise<Response> => {
-    const user: IUser = await getUserByAuthHeader(
-      request.headers.authorization
-    );
     try {
+      const user: IUser = await getUserByAuthHeader(
+        request.headers.authorization
+      );
       const value: IItem = await updateItemSchema.validateAsync(request.body);
       const data = await this.service.updateItem(
         user,
@@ -65,11 +77,14 @@ export class ItemController {
         value
       );
       return response.status(200).json(data);
-    } catch (err: unknown) {
+    } catch (err: any) {
+      const status = err.status || 500;
       if (err instanceof ValidationError) {
         return response.status(400).json(err);
       }
-      return response.status(404).json({ detail: "Not Found" });
+      return response
+        .status(status)
+        .json({ detail: STATUS_CODES[status.toString()] });
     }
   };
 
@@ -77,10 +92,10 @@ export class ItemController {
     request: Request,
     response: Response
   ): Promise<Response> => {
-    const user: IUser = await getUserByAuthHeader(
-      request.headers.authorization
-    );
     try {
+      const user: IUser = await getUserByAuthHeader(
+        request.headers.authorization
+      );
       const value: IPartialUpdateItem =
         await partialUpdateItemSchema.validateAsync(request.body);
       const data: IItem = await this.service.partialUpdateItem(
@@ -89,29 +104,32 @@ export class ItemController {
         value
       );
       return response.status(200).json(data);
-    } catch (err: unknown) {
+    } catch (err: any) {
+      const status = err.status || 500;
       if (err instanceof ValidationError) {
         return response.status(400).json(err);
       }
-      return response.status(404).json({ detail: "Not Found" });
+      return response
+        .status(status)
+        .json({ detail: STATUS_CODES[status.toString()] });
     }
   };
 
   destory = async (request: Request, response: Response): Promise<Response> => {
-    const user: IUser = await getUserByAuthHeader(
-      request.headers.authorization
-    );
     try {
+      const user: IUser = await getUserByAuthHeader(
+        request.headers.authorization
+      );
       const data: object = await this.service.destroyItem(
         user,
         request.params.id
       );
       return response.status(204).json(data);
-    } catch (err: unknown) {
-      if (err instanceof ValidationError) {
-        return response.status(400).json(err);
-      }
-      return response.status(404).json({ detail: "Not Found" });
+    } catch (err: any) {
+      const status = err.status || 500;
+      return response
+        .status(status)
+        .json({ detail: STATUS_CODES[status.toString()] });
     }
   };
 }

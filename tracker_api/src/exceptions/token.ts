@@ -4,5 +4,6 @@ export class InvalidTokenError extends Error {
     super(message);
     Error.captureStackTrace(this, this.constructor);
     this.name = this.constructor.name;
+    Object.setPrototypeOf(this, InvalidTokenError.prototype);
   }
 }
