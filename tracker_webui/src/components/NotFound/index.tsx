@@ -1,3 +1,7 @@
 export default function NotFound(): JSX.Element {
-  return <>404 Not Found</>;
+  return (
+    <div className="grid h-screen place-items-center">
+      <strong>404</strong> Not Found
+    </div>
+  );
 }
