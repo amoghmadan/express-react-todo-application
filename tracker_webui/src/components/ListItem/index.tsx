@@ -1,8 +1,46 @@
+import { AxiosResponse } from "axios";
+import { MouseEvent } from "react";
+import { NavigateFunction, useNavigate } from "react-router-dom";
+
+import { TaskAPI } from "../../constants";
 import { useListItem } from "../../hooks";
 import { IItem } from "../../interfaces";
+import { axios } from "../../services";
 
 export default function ListItem(): JSX.Element {
+  const navigate: NavigateFunction = useNavigate();
   const [items] = useListItem();
+
+  const partialUpdateItem =
+    (id: string) =>
+    async (e: MouseEvent<HTMLButtonElement>): Promise<void> => {
+      e.preventDefault();
+      const response: AxiosResponse = await axios.patch(
+        `${TaskAPI.ITEM}/${id}`,
+        {
+          done: true,
+        }
+      );
+      if (response.status !== 200) {
+        alert("Something went wrong!");
+        return;
+      }
+      navigate(0);
+    };
+
+  const destroyItem =
+    (id: string) =>
+    async (e: MouseEvent<HTMLButtonElement>): Promise<void> => {
+      e.preventDefault();
+      const response: AxiosResponse = await axios.delete(
+        `${TaskAPI.ITEM}/${id}`
+      );
+      if (response.status !== 204) {
+        alert("Something went wrong!");
+        return;
+      }
+      navigate(0);
+    };
 
   return (
     <div className="flex flex-col">
@@ -35,11 +73,12 @@ export default function ListItem(): JSX.Element {
                       </td>
                       <td className="whitespace-nowrap px-6 py-4">
                         {item.done ? (
-                          <>{item.text}</>
+                          <>Done</>
                         ) : (
                           <button
                             type="button"
                             className="middle none center rounded-lg bg-blue-500 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            onClick={partialUpdateItem(item._id || "")}
                           >
                             Mark Done
                           </button>
@@ -49,6 +88,7 @@ export default function ListItem(): JSX.Element {
                         <button
                           type="button"
                           className="middle none center rounded-lg bg-red-500 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-red-500/20 transition-all hover:shadow-lg hover:shadow-red-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                          onClick={destroyItem(item._id || "")}
                         >
                           Remove
                         </button>
