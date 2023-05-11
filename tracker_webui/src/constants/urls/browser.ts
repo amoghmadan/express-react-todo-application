@@ -7,4 +7,5 @@ export enum Browser {
   APPLE = "/apple-touch-icon.png",
   ANDROID_192 = "/android-chrome-192x192.png",
   ANDROID_512 = "/android-chrome-512x512.png",
+  HTTP_404 = "*",
 }

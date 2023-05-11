@@ -1,12 +1,19 @@
 import { AxiosResponse } from "axios";
 import { MouseEvent, useEffect } from "react";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
-import { useUser } from "../../hooks";
 import { AccountAPI, Browser, LOCAL_STORAGE_KEY } from "../../constants";
+import { useUser } from "../../hooks";
 import { axios } from "../../services";
 
 export default function Navbar(): JSX.Element {
-  const [user, loading] = useUser();
+  const navigate: NavigateFunction = useNavigate();
+  const [user] = useUser();
+
+  useEffect((): void => {
+    const token: string | null = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (!token) navigate(Browser.ROOT);
+  }, []);
 
   const performLogout = async (
     e: MouseEvent<HTMLButtonElement>
@@ -17,12 +24,8 @@ export default function Navbar(): JSX.Element {
       console.error("Something went wrong!");
     }
     localStorage.removeItem(LOCAL_STORAGE_KEY);
+    navigate(Browser.ROOT);
   };
-
-  useEffect((): void => {
-    if (loading) {
-    }
-  }, [loading]);
 
   return (
     <nav className="bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200">

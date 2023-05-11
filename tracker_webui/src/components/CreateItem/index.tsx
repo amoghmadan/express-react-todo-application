@@ -1,14 +1,15 @@
 import { AxiosResponse } from "axios";
 import { MutableRefObject, useRef } from "react";
 
+import { TaskAPI } from "../../constants";
 import { axios } from "../../services";
 
 export default function CreateItem(): JSX.Element {
-  const textRef: MutableRefObject<never> = useRef(null!);
+  const textRef: MutableRefObject<HTMLInputElement> = useRef(null!);
 
   const onSubmit = async (): Promise<void> => {
-    const response: AxiosResponse = await axios.post("task/items", {
-      text: textRef.current,
+    const response: AxiosResponse = await axios.post(TaskAPI.ITEM, {
+      text: textRef.current.value,
     });
     if (response.status !== 201) {
       if (response.status === 400) {
@@ -28,6 +29,7 @@ export default function CreateItem(): JSX.Element {
           placeholder="Text"
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           ref={textRef}
+          required={true}
         />
         <button
           type="submit"

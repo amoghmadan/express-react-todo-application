@@ -19,7 +19,7 @@ export default function useUser(): [IUser, boolean] {
   useEffect((): void => {
     setLoading(true);
     retrieveUser();
-  });
+  }, []);
 
   return [user, loading];
 }

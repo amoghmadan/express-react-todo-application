@@ -1,15 +1,8 @@
-import { useEffect } from "react";
-
 import { useListItem } from "../../hooks";
 import { IItem } from "../../interfaces";
 
 export default function ListItem(): JSX.Element {
-  const [items, loading] = useListItem();
-
-  useEffect((): void => {
-    if (loading) {
-    }
-  }, []);
+  const [items] = useListItem();
 
   return (
     <div className="flex flex-col">
