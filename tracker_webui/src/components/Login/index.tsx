@@ -1,27 +1,40 @@
 import { AxiosResponse } from "axios";
-import { MutableRefObject, useRef } from "react";
+import { FormEvent, MutableRefObject, useEffect, useRef } from "react";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
-import { axios } from "../../services";
 import { AccountAPI, Browser, LOCAL_STORAGE_KEY } from "../../constants";
 import { IToken } from "../../interfaces";
+import { axios } from "../../services";
 
 export default function Login(): JSX.Element {
-  const emailRef: MutableRefObject<never> = useRef(null!);
-  const passwordRef: MutableRefObject<never> = useRef(null!);
+  const navigate: NavigateFunction = useNavigate();
+  const emailRef: MutableRefObject<HTMLInputElement> = useRef(null!);
+  const passwordRef: MutableRefObject<HTMLInputElement> = useRef(null!);
 
-  const onSubmit = async (): Promise<void> => {
-    const payload = { email: emailRef.current, password: passwordRef.current };
-    const response: AxiosResponse = await axios.post(AccountAPI.LOGIN, payload);
+  useEffect((): void => {
+    const token: string | null = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (!token) return;
+    navigate(Browser.TODO);
+  }, []);
 
+  const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+    const response: AxiosResponse = await axios.post(AccountAPI.LOGIN, {
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+    });
+    console.log(response);
     if (response.status !== 201) {
       if (response.status === 400) {
-        alert(await response.data);
+        alert("Invalid credentials!");
       } else {
         alert("Something went wrong!");
       }
+      return;
     }
     const data: IToken = await response.data;
     localStorage.setItem(LOCAL_STORAGE_KEY, data.token);
+    navigate(Browser.TODO);
   };
 
   return (
@@ -39,11 +52,7 @@ export default function Login(): JSX.Element {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Sign in to your account
             </h1>
-            <form
-              className="space-y-4 md:space-y-6"
-              action="#"
-              onSubmit={onSubmit}
-            >
+            <form className="space-y-4 md:space-y-6" onSubmit={onSubmit}>
               <div>
                 <label
                   htmlFor="email"
@@ -55,7 +64,7 @@ export default function Login(): JSX.Element {
                   type="email"
                   name="email"
                   id="email"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="name@company.com"
                   ref={emailRef}
                   required={true}
@@ -73,14 +82,14 @@ export default function Login(): JSX.Element {
                   name="password"
                   id="password"
                   placeholder="••••••••"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   ref={passwordRef}
                   required={true}
                 />
               </div>
               <button
                 type="submit"
-                className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
                 Sign in
               </button>

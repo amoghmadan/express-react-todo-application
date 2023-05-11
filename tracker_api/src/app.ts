@@ -3,6 +3,7 @@ import yargs, { ArgumentsCamelCase, Argv } from "yargs";
 import { createsuperuser, runserver } from "./cli";
 
 yargs
+  .strict()
   .command(
     "runserver [port] [host]",
     "Run server",

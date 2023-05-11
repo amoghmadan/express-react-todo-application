@@ -1,4 +1,3 @@
-import { MongoServerError } from "mongodb";
 import { Model } from "mongoose";
 
 import { NotFoundError } from "../../exceptions/http";
@@ -10,16 +9,11 @@ export class ItemService {
   private model: Model<IUser> = User;
 
   getItem = async (user: IUser, id: string): Promise<IItem> => {
-    try {
-      const obj: IUser | null = await this.model.findById(user._id, {
-        items: { $elemMatch: { _id: id } },
-      });
-      if (!obj || obj.items.length === 0) throw new NotFoundError("Not Found");
-      return obj.items[0];
-    } catch (err: unknown) {
-      if (err instanceof MongoServerError) throw new NotFoundError("Not Found");
-      throw err;
-    }
+    const obj: IUser | null = await this.model.findById(user._id, {
+      items: { $elemMatch: { _id: id } },
+    });
+    if (!obj || obj.items.length === 0) throw new NotFoundError();
+    return obj.items[0];
   };
 
   createItem = async (user: IUser, payload: IItem): Promise<IItem> => {

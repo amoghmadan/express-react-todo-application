@@ -14,21 +14,21 @@ const onRequest = (
   if (token) {
     config.headers["Authorization"] = `Token ${token}`;
   }
-  if (JSON.parse(import.meta.env.NEXT_PUBLIC_DEBUG || "false")) {
+  if (JSON.parse(import.meta.env.VITE_PUBLIC_DEBUG || "false")) {
     console.info(`[request] [${JSON.stringify(config)}]`);
   }
   return config;
 };
 
 const onRequestError = (error: AxiosError): Promise<AxiosError> => {
-  if (JSON.parse(import.meta.env.NEXT_PUBLIC_DEBUG || "false")) {
+  if (JSON.parse(import.meta.env.VITE_PUBLIC_DEBUG || "false")) {
     console.error(`[request error] [${JSON.stringify(error)}]`);
   }
   return Promise.reject(error);
 };
 
 const onResponse = (response: AxiosResponse): AxiosResponse => {
-  if (JSON.parse(import.meta.env.NEXT_PUBLIC_DEBUG || "false")) {
+  if (JSON.parse(import.meta.env.VITE_PUBLIC_DEBUG || "false")) {
     console.info(`[response] [${JSON.stringify(response)}]`);
   }
   return response;
@@ -57,11 +57,11 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
         return Promise.reject(error.message);
     }
   } catch (e: unknown) {
-    if (JSON.parse(import.meta.env.NEXT_PUBLIC_DEBUG || "false")) {
+    if (JSON.parse(import.meta.env.VITE_PUBLIC_DEBUG || "false")) {
       console.error(`[response error] [${JSON.stringify(e)}]`);
     }
   }
-  if (JSON.parse(import.meta.env.NEXT_PUBLIC_DEBUG || "false")) {
+  if (JSON.parse(import.meta.env.VITE_PUBLIC_DEBUG || "false")) {
     console.error(`[response error] [${JSON.stringify(error)}]`);
   }
   return Promise.reject(error.message);

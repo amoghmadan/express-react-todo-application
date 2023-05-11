@@ -19,7 +19,7 @@ export default function useListItem(): [IItem[], boolean] {
   useEffect((): void => {
     setLoading(true);
     retrieveUser();
-  });
+  }, []);
 
   return [users, loading];
 }

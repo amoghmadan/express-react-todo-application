@@ -1,14 +1,14 @@
 import { User } from "../models";
 import { IUser } from "../models/user/types";
 
-import { InvalidTokenError } from "../exceptions";
+import { UnauthorizedError } from "../exceptions/http";
 
 export async function getUserByAuthHeader(
   authorization: string | undefined
 ): Promise<IUser> {
-  if (!authorization) throw InvalidTokenError;
+  if (!authorization) throw new UnauthorizedError();
   const token: string = authorization.split(" ")[1];
   const user: IUser | null = await User.findOne({ "token.key": token });
-  if (!user) throw InvalidTokenError;
+  if (!user) throw new UnauthorizedError();
   return user;
 }
