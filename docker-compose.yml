@@ -30,7 +30,7 @@ services:
 
   webui:
     build: ./tracker_webui
-    command: bash -c "npm run build && http-server dist"
+    command: bash -c "npm run build && serve dist"
     container_name: "Tracker-Frontend"
     environment:
       NODE_ENV: ${NODE_ENV:-local}
@@ -61,4 +61,3 @@ volumes:
     name: api-packages
   webui-packages:
     name: webui-packages
-
