@@ -54,7 +54,7 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
       case 504:
         break;
       default:
-        return Promise.reject(error.message);
+        return Promise.reject(error);
     }
   } catch (e: unknown) {
     if (JSON.parse(import.meta.env.VITE_PUBLIC_DEBUG || "false")) {
