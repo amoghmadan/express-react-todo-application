@@ -19,12 +19,10 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     image: tracker:api
-    ports:
-      - "8000:8000"
     restart: always
     volumes:
       - ./tracker_api:/tracker
-      - api-packages:/tracker/node_modules
+      - /tracker/node_modules
     depends_on:
       - db
 
@@ -35,12 +33,10 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV:-local}
     image: tracker:webui
-    ports:
-      - "3000:8080"
     restart: always
     volumes:
       - ./tracker_webui:/tracker
-      - webui-packages:/tracker/node_modules
+      - /tracker/node_modules
     depends_on:
       - api
 
@@ -55,9 +51,3 @@ services:
       - ./certs:/etc/ssl/certs
     depends_on:
       - webui
-
-volumes:
-  api-packages:
-    name: api-packages
-  webui-packages:
-    name: webui-packages
