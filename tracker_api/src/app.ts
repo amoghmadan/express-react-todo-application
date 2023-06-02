@@ -17,7 +17,7 @@ yargs
         .positional("host", {
           type: "string",
           describe: "Host",
-          default: "127.0.0.1",
+          default: "api",
         });
     },
     async (args: ArgumentsCamelCase): Promise<void> => {
