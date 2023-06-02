@@ -30,7 +30,7 @@ services:
 
   webui:
     build: ./tracker_webui
-    command: bash -c "npm run build && serve dist"
+    command: bash -c "npm run build && serve dist -p 8080"
     container_name: "Tracker-Frontend"
     environment:
       NODE_ENV: ${NODE_ENV:-local}
