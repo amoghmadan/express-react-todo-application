@@ -12,8 +12,8 @@ TODO Application
 
 ## Reference
 
-- **[Backend Reference]**
-- **[Frontend Reference]**
+- **[Back End Reference]**
+- **[Front End Reference]**
 
-[backend reference]: tracker_api/README.md
-[frontend reference]: tracker_webui/README.md
+[Back End Reference]: tracker_api/README.md
+[Front End Reference]: tracker_webui/README.md
